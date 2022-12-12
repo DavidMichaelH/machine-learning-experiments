@@ -1,3 +1,4 @@
-/Kaggle/DisasterTweets/input/
+/Kaggle/DisasterTweets/input/*.csv
+/Kaggle/DisasterTweets/input/*.zip
 /Kaggle/DisasterTweets/personal_experiment/
 /Kaggle/DisasterTweets/src/simple_example_preprocess.py

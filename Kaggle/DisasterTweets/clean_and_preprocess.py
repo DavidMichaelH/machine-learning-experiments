@@ -1,6 +1,9 @@
 import logging
 import types
+
+import numpy as np
 import pandas as pd
+from sklearn import model_selection
 
 
 class CleanAndPreprocess:
@@ -85,7 +88,19 @@ class CleanAndPreprocess:
 
         return row
 
-
+    def create_stratified_folds(self, num_folds=5):
+        # create a new column called kfold and fill it with -1
+        self.dataframe['kfold'] = -1
+        # randomize the rows of the data
+        self.dataframe = self.dataframe.sample(frac=1).reset_index(drop=True)
+        # calculate the number of bins by Sturge's rule
+        num_bins = int(np.floor(1 + np.log2(len(self.dataframe))))
+        # define the bins for the stratified folds
+        self.dataframe.loc[:, "bins"] = pd.cut(self.dataframe["target"], bins=num_bins, labels=False)
+        kf = model_selection.StratifiedKFold(n_splits=num_folds)
+        for f, (t_, v_) in enumerate(kf.split(X=self.dataframe, y=self.dataframe.bins.values)):
+            self.dataframe.loc[v_, 'kfold'] = f
+        self.dataframe = self.dataframe.drop("bins", axis=1)
 
 
 
